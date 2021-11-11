@@ -35,11 +35,11 @@ def nfactor(polynomial):
 
     elif numofterms == 4:
         pass
-    """
+    
 
     else:
         return None
-    #return simplify(sqrt(polynomial/6)) 
+    """ 
 
 def sqaurediff(polynomial):
     #a**2 + b**2 = (a+b)(a-b)
