@@ -12,13 +12,10 @@ polynomial = parse_expr(polynomstr, evaluate=False)
 
 
 def nfactor(polynomial):
-    # set up some useful variables.
     separateterms = Add.make_args(polynomial)
     numofterms = len(separateterms)
-    denom = gcd(separateterms)
-    #pprint(denom)
+    denom = gcd(separateterms) 
     
-
     # If the gcd isn't 1, factor the expression. I'm using factor() here because if I multiply it, it'll display wrong sometimes.
     # I do have the correct math done, it just tries to make the equation look nice if I multiply it like normal and it makes it not factored anymore.
     # It's either this or having it display certain things as 3*(4/3)
@@ -27,11 +24,12 @@ def nfactor(polynomial):
 
     # Check if the polynomial is a binomial
     elif numofterms == 2:
+
         # Check if the binomial is able to be square rooted
         if perfectsquare(polynomial):
             
             # Check if the second term is a monomial or not
-            # The check happens because it's easier to check if the second term is negative this way
+            # The check happens because it's easier to check if it's negative when we know if it's a normal number
             isNomial = True
             try:
                 Poly(separateterms[1])
@@ -77,5 +75,4 @@ def squarediff(polynomial):
     return ((a+b)*(a-b))
 
 pprint(nfactor(polynomial))
-pprint(factor(polynomial))
-pprint(sqrt(6**2) == 6) 
+pprint(factor(polynomial)) 
