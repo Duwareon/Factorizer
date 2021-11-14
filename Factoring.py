@@ -1,14 +1,11 @@
 #!/usr/bin/env Python3
 from sympy import *
+from sys import argv
 init_printing(use_unicode=True)
 
-#x, y = symbols('x y')
-
-#polynomstr = "9*x**2-49"
-polynomstr = "9*x**2-25*y**2"
-
+# Setup the input polynomial
+polynomstr = argv[1]
 polynomial = parse_expr(polynomstr, evaluate=False)
-
 
 
 def nfactor(polynomial):
@@ -21,12 +18,13 @@ def nfactor(polynomial):
     # It's either this or having it display certain things as 3*(4/3)
     if denom != 1:
         return (factor(denom * (polynomial / denom)))
-
+    
     # Check if the polynomial is a binomial
-    elif numofterms == 2:
-
-        # Check if the binomial is able to be square rooted
-        if perfectsquare(polynomial):
+    if numofterms == 2:
+        
+        # Check if the binomial is square
+        # If not, then check for cubes
+        if perfectsquare(polynomial, 2):
             
             # Check if the second term is a monomial or not
             # The check happens because it's easier to check if it's negative when we know if it's a normal number
@@ -38,41 +36,62 @@ def nfactor(polynomial):
             
             
             if isNomial:
-                # Check if the second term is negative
+                # Check if the second term is negative 
                 if any(ele < 0 for ele in Poly(separateterms[-1]).all_coeffs()):
                     return squarediff(polynomial)
                 
-                else: return False
+                else:
+                    print("Not A**2-B**2")
+                    return False
                 
-            else:
-                if (separateterms[1]/-1)>0:
+            
+            else: 
+                # Check if the second term is negative
+                if separateterms[1]<0:
                     return squarediff(polynomial)
-                else: return False
-        else:
-            pass
-    
+                else:
+                    print("Not A**2-B**2")
+                    return False
+        elif perfectsquare(polynomial, 3):
+            # TODO: add cube difference/sum methods of factoring
+            return True 
+            
+           
     elif numofterms == 3:
         pass
-
+    
     elif numofterms == 4:
         pass
-    
+ 
     return False
-    
 
-def perfectsquare(polynomial):
-    args = Add.make_args(polynomial)
-    return True
+def perfectsquare(binomial, num):
+    args = Add.make_args(binomial)
+    squaretest = []
+
+    if num == 2:
+        def test(arg):
+            return floor(sqrt(arg)+0.5)**2
+    elif num == 3:
+        def test(arg):
+            return floor(cbrt(arg)+0.5)**3
     
+    for i in range(0, 1):
+        if test(args[i]):
+            squaretest.append(True)
+        else: squaretest.append(False)
+    return False in squaretest
+
+# a**2 + b**2 = (a+b)(a-b)
 def squarediff(polynomial):
-    #a**2 + b**2 = (a+b)(a-b)
     args = Add.make_args(polynomial)
-
+    
     # TODO: make this not display as sqrt(x**2)
-    a = (sqrt(args[0]))
+    # It's hard to do because for some reason simplify() doesn't make that change
+    a = sqrt(args[0])
     b = sqrt(abs(args[1]))
-
-    return ((a+b)*(a-b))
+    
+    return (a+b)*(a-b)
 
 pprint(nfactor(polynomial))
 pprint(factor(polynomial)) 
