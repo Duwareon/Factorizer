@@ -22,41 +22,46 @@ def nfactor(polynomial):
     # Check if the polynomial is a binomial
     if numofterms == 2:
         
+        # Check if the second term is a monomial or not
+        # The check happens because it's easier to check if it's negative when we know if it's a normal number
+        isNomial = True
+        try:
+            Poly(separateterms[1])
+        except:
+            isNomial = False
+        
+        if isNomial:
+            def isPos(val):
+                return not (any(ele < 0 for ele in Poly(val).all_coeffs()))
+        
+        else:
+            def isPos(val):
+                return val<0
+        
         # Check if the binomial is square
         # If not, then check for cubes
-        if perfectsquare(polynomial, 2):
+        if isperfectroot(polynomial, 2):
             
-            # Check if the second term is a monomial or not
-            # The check happens because it's easier to check if it's negative when we know if it's a normal number
-            isNomial = True
-            try:
-                Poly(separateterms[1])
-            except:
-                isNomial = False
-            
-            
-            if isNomial:
-                # Check if the second term is negative 
-                if any(ele < 0 for ele in Poly(separateterms[-1]).all_coeffs()):
-                    return squarediff(polynomial)
+            # Check if the second term is negative 
+            if isPos(separateterms[1]):
+                return squarediff(polynomial)
                 
-                else:
-                    print("Not A**2-B**2")
-                    return False
-                
+            else:
+                return True
             
-            else: 
-                # Check if the second term is negative
-                if separateterms[1]<0:
-                    return squarediff(polynomial)
-                else:
-                    print("Not A**2-B**2")
-                    return False
-        elif perfectsquare(polynomial, 3):
-            # TODO: add cube difference/sum methods of factoring
-            return True 
+        elif isperfectroot(polynomial, 3):
+            a = cbrt(separateterms[0])
+            b = cbrt(separateterms[1])             
             
-           
+            if (isPos(separateterms[1])):
+                return (a+b)(a**2-ab+b**2)
+            
+            else:
+                return (a-b)(a**2+ab+b**2)
+        
+        else:
+            return False
+        
     elif numofterms == 3:
         pass
     
@@ -65,21 +70,16 @@ def nfactor(polynomial):
  
     return False
 
-def perfectsquare(binomial, num):
+# NOTE: this doesn't work properly because of the fact that sympy doesn't work properly with rooted exponents
+def isperfectroot(binomial, num):
     args = Add.make_args(binomial)
     squaretest = []
-
-    if num == 2:
-        def test(arg):
-            return floor(sqrt(arg)+0.5)**2
-    elif num == 3:
-        def test(arg):
-            return floor(cbrt(arg)+0.5)**3
     
     for i in range(0, 1):
-        if test(args[i]):
+        if floor(root(args[i], num)+0.5)**num == args[i]:
             squaretest.append(True)
         else: squaretest.append(False)
+    
     return False in squaretest
 
 # a**2 + b**2 = (a+b)(a-b)
@@ -94,4 +94,4 @@ def squarediff(polynomial):
     return (a+b)*(a-b)
 
 pprint(nfactor(polynomial))
-pprint(factor(polynomial)) 
+pprint(factor(polynomial))
