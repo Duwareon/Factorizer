@@ -8,7 +8,14 @@ try:
 	polynomstr = argv[1]
 except:
 	polynomstr = "9*x**2-18*y"
-polynomial = parse_expr(polynomstr, {'x':Symbol('x', real=True), 'y':Symbol('y', real=True)}) 
+
+varset = {}
+
+for i in range(97, 123):
+        a = chr(i)
+        varset[a] =(Symbol(a, real=True))
+        
+polynomial = parse_expr(polynomstr, varset) 
 
 
 
