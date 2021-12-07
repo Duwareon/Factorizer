@@ -1,4 +1,4 @@
-#!/usr/bin/env Python3
+#!/usr/bin/env python3
 from sympy import *
 from sys import argv
 init_printing(use_unicode=False)
